@@ -1,3 +1,12 @@
+# Core dependencies
 pandas>=1.3.0
 requests>=2.26.0
-openpyxl>=3.0.0
+openpyxl>=3.0.0        # For reading/writing Excel (.xlsx)
+xlrd>=2.0.1            # For older Excel formats (.xls)
+
+# Sitemap + XML parsing
+lxml>=4.9.0            # Faster + robust XML parsing (recommended over xml.etree)
+beautifulsoup4>=4.11.0 # Optional: for HTML/XML handling if needed
+
+# Progress + console output
+tqdm>=4.64.0           # For progress bars in loops
