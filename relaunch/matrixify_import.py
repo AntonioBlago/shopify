@@ -51,6 +51,26 @@ if TYPE_COLUMN in df_valid.columns:
 
 # ─────────────── Create Redirect Import File ─────────────── #
 df_redirects = pd.DataFrame()
-df_redirects["Path"] = df_valid[URL_COLUMN].apply(get_path)           # Extract source path
-df_redirects["Target"] = df_valid[MATCH_COLUMN].apply(get_path)       # Extract target path
-df_redirects["Command"] = "MERGE"                                      # Command required by import tools (e.g., Matrixify_
+
+# Columns expected by Matrixify: "Redirect from", "Redirect to", "Redirect Type", "Command"
+df_redirects["Redirect from"] = df_valid[URL_COLUMN].apply(get_path)
+df_redirects["Redirect to"] = df_valid[MATCH_COLUMN].apply(get_path)
+
+# Use per-entry redirect type if available, otherwise default to 301
+if TYPE_COLUMN in df_valid.columns:
+    df_redirects["Redirect Type"] = df_valid[TYPE_COLUMN]
+else:
+    df_redirects["Redirect Type"] = "301"
+
+# Required command column for Matrixify imports
+df_redirects["Command"] = "MERGE"
+
+# Export redirect import CSV
+df_redirects.to_csv(REDIRECT_EXPORT, index=False)
+print(f"✅ Redirect import file saved: {REDIRECT_EXPORT}")
+
+# Save entries that had no match for review
+if not df_no_match.empty:
+    df_no_match.to_excel(NO_MATCH_EXPORT, index=False)
+    print(f"⚠️ No match export saved: {NO_MATCH_EXPORT}")
+
